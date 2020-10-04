@@ -43,9 +43,6 @@ function newTask (){
         taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASKS';
     }
     
-
-    task.value = '';
-    
     deleteTask.addEventListener('click', function(e) {
         e.stopPropagation();
         e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
@@ -90,7 +87,9 @@ function newTask (){
 }
 addTask.addEventListener('click', function(){
     if(task.value !== '') {
-    newTask();}
+    newTask();
+    task.value = '';
+    }
 
     else {
         window.alert('please write a task');

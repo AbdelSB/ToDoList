@@ -8,6 +8,9 @@ let completedTasks = document.body.getElementsByClassName('taskSticker completed
 completed.textContent = 'COMPLETED '+completedTasks.length;
 let remaining = document.querySelector('.remainingTasks');
 remaining.textContent = 'REMAINING ' + (tasks.length - completedTasks.length);
+const doneFilter = document.querySelector('.doneFilter');
+const noFilter = document.querySelector('.noFilter');
+const incompleteFilter = document.querySelector('.incompleteFilter');
 
 function newTask (){
     taskSticker = document.createElement('div');
@@ -85,8 +88,34 @@ function newTask (){
 
     });
 }
+
+doneFilter.addEventListener('click', function(){
+    for(let i = 0; i < tasks.length; i++) {
+        tasks[i].style.display = 'none';
+    }
+    for(let i = 0; i < tasks.length; i++) {
+        if (tasks[i].getAttribute('class') === 'taskSticker completed') {
+            tasks[i].style.display = '';
+    }
+}
+});
+noFilter.addEventListener('click', function(){
+    for(let i = 0; i < tasks.length; i++) {
+        tasks[i].style.display = '';
+    }
+});
+incompleteFilter.addEventListener('click', function(){
+    for(let i = 0; i < tasks.length; i++) {
+        tasks[i].style.display = 'none'}
+    for(let i = 0; i < tasks.length; i++) {
+        if (tasks[i].getAttribute('class') === 'taskSticker') {
+            tasks[i].style.display = '';
+        }
+    }
+});
+
 addTask.addEventListener('click', function(){
-    if(task.value !== '') {
+    if(task.value !== ''){
     newTask();
     task.value = '';
     }
@@ -96,7 +125,7 @@ addTask.addEventListener('click', function(){
     }
     updateCompleted();
     updateRemaining();
-    })
+    });
 task.addEventListener('keyup', function(e) {
     // Number 13 is the "Enter" key on the keyboard
     if (e.key === 'Enter') {
@@ -127,4 +156,3 @@ function updateRemaining() {
 //add the change status code
 // Add a delete all button
 // Add a change status for all button
-    

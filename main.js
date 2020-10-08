@@ -157,7 +157,7 @@ function updateRemaining() {
 // Add a delete all button
 // Add a change status for all button
 <<<<<<< HEAD
-// See if dashboard will be updated
+// See if dashboard will be updated or not
 =======
 // To make commit show on the dashboard
 >>>>>>> 87cd6c77652fb80784be4d8bd192b093c249bcfe

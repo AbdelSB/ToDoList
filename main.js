@@ -3,91 +3,16 @@ const task = document.getElementById('task');
 let tasks = document.body.getElementsByClassName('taskSticker');
 let taskCount = document.querySelector('.taskCount');
 let completed = document.querySelector('.completedTasks');
-taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASKS';
 let completedTasks = document.body.getElementsByClassName('taskSticker completed');
-completed.textContent = 'COMPLETED '+completedTasks.length;
 let remaining = document.querySelector('.remainingTasks');
-remaining.textContent = 'REMAINING ' + (tasks.length - completedTasks.length);
 const doneFilter = document.querySelector('.doneFilter');
 const noFilter = document.querySelector('.noFilter');
 const incompleteFilter = document.querySelector('.incompleteFilter');
+const deleteAllTasks  = document.querySelector('.deleteAllTasks');
 
-function newTask (){
-    taskSticker = document.createElement('div');
-    taskSticker.setAttribute('class', 'taskSticker');
-    document.body.appendChild(taskSticker);
-
-    taskText = document.createElement('p');
-    taskSticker.appendChild(taskText);
-    taskText.textContent = task.value;
-
-    buttons = document.createElement('div');
-    buttons.setAttribute('class', 'buttons');
-    taskSticker.appendChild(buttons);
-
-    taskStatus = document.createElement('div');
-    taskStatus.setAttribute('class', 'taskStatus');
-    taskStatus.setAttribute('title', 'click to mark as completed');
-    buttons.appendChild(taskStatus);
-
-    deleteTask = document.createElement('div');
-    deleteTask.setAttribute('class', 'deleteTask1');
-    deleteTask.setAttribute('title', 'Click to delete this task');
-    buttons.appendChild(deleteTask);
-
-    tasks = document.body.getElementsByClassName('taskSticker');
-    if(tasks.length > 0) {
-        taskCount.style.color = 'black';
-    }
-    if(tasks.length === 1) {
-        taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASK';
-    }
-    else {
-        taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASKS';
-    }
-    
-    deleteTask.addEventListener('click', function(e) {
-        e.stopPropagation();
-        e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
-        tasks = document.body.getElementsByClassName('taskSticker');
-        if(tasks.length === 1) {
-            taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASK';
-        }
-        else {
-            taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASKS';
-        }
-        if(tasks.length === 0) {
-            taskCount.style.color = 'rgba(141, 141, 141)';
-        }
-        // if(tasks.length === 0) {
-        //     taskCount.textContent ='';
-        // }
-        updateCompleted();
-        updateRemaining();
-    })
-    taskStatus.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if(e.target.style.backgroundImage === 'url("icons/neutral_button_tr.png")') {
-            e.target.style.backgroundImage = 'url("icons/done_button_tr.png")';
-            e.target.setAttribute('title', 'click to mark as not completed');
-            e.target.parentElement.parentElement.setAttribute('class', 'taskSticker completed');
-            e.target.parentElement.parentElement.querySelector('p').style.color='rgb(161, 161, 161)';
-            e.target.parentElement.parentElement.querySelector('p').style.textDecoration='line-through';
-            updateCompleted();
-            updateRemaining();
-        }
-        else {
-            e.target.style.backgroundImage ='url("icons/neutral_button_tr.png")';
-            e.target.setAttribute('title', 'click to mark as completed');
-            e.target.parentElement.parentElement.setAttribute('class', 'taskSticker');
-            e.target.parentElement.parentElement.querySelector('p').style.color='';
-            e.target.parentElement.parentElement.querySelector('p').style.textDecoration='';
-            updateCompleted();
-            updateRemaining();
-        }
-
-    });
-}
+updateTotal();
+updateCompleted();
+updateRemaining();
 
 doneFilter.addEventListener('click', function(){
     for(let i = 0; i < tasks.length; i++) {
@@ -106,13 +31,25 @@ noFilter.addEventListener('click', function(){
 });
 incompleteFilter.addEventListener('click', function(){
     for(let i = 0; i < tasks.length; i++) {
-        tasks[i].style.display = 'none'}
+        tasks[i].style.display = 'none';
+    }
     for(let i = 0; i < tasks.length; i++) {
         if (tasks[i].getAttribute('class') === 'taskSticker') {
             tasks[i].style.display = '';
         }
     }
 });
+deleteAllTasks.addEventListener('click', function(e) {
+    e.stopPropagation();
+    let initialTasksNumber = tasks.length;
+    for(let i = initialTasksNumber - 1; i >= 0 ; i--) {
+        console.log(i);
+        tasks[i].parentElement.removeChild(tasks[i]);
+    }
+    updateTotal();
+    updateCompleted();
+    updateRemaining();
+})
 
 addTask.addEventListener('click', function(){
     if(task.value !== ''){
@@ -123,6 +60,7 @@ addTask.addEventListener('click', function(){
     else {
         window.alert('please write a task');
     }
+    updateTotal();
     updateCompleted();
     updateRemaining();
     });
@@ -134,13 +72,86 @@ task.addEventListener('keyup', function(e) {
       // Trigger the button element with a click
       addTaskClick();
     }
+    updateTotal();
     updateCompleted();
     updateRemaining();
     });
-
+    
+    function newTask (){
+        taskSticker = document.createElement('div');
+        taskSticker.setAttribute('class', 'taskSticker');
+        document.body.appendChild(taskSticker);
+    
+        taskText = document.createElement('p');
+        taskSticker.appendChild(taskText);
+        taskText.textContent = task.value;
+    
+        buttons = document.createElement('div');
+        buttons.setAttribute('class', 'buttons');
+        taskSticker.appendChild(buttons);
+    
+        taskStatus = document.createElement('div');
+        taskStatus.setAttribute('class', 'taskStatus');
+        taskStatus.setAttribute('title', 'click to mark as completed');
+        buttons.appendChild(taskStatus);
+    
+        deleteTask = document.createElement('div');
+        deleteTask.setAttribute('class', 'deleteTask1');
+        deleteTask.setAttribute('title', 'Click to delete this task');
+        buttons.appendChild(deleteTask);
+        
+        deleteTask.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.target.parentElement.parentElement.style.opacity = '0';
+            e.target.parentElement.parentElement.addEventListener('transitionend', function(){
+                e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+                updateTotal();
+                updateCompleted();
+                updateRemaining();
+            })
+        
+            
+            // e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+        })
+        taskStatus.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if(e.target.parentElement.parentElement.getAttribute('class') === 'taskSticker') {
+                e.target.setAttribute('title', 'click to mark as not completed');
+                e.target.parentElement.parentElement.setAttribute('class', 'taskSticker completed');
+            }
+            else {
+                e.target.setAttribute('title', 'click to mark as completed');
+                e.target.parentElement.parentElement.setAttribute('class', 'taskSticker');
+            }
+            updateTotal();
+            updateCompleted();
+            updateRemaining();
+    
+        });
+    }
 
 function addTaskClick() {
     addTask.click();
+}
+
+function updateTotal() {
+    tasks = document.body.getElementsByClassName('taskSticker');
+    if(tasks.length === 1) {
+        taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASK';
+    }
+    else {
+        taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASKS';
+    }
+    if(tasks.length > 0) {
+        taskCount.style.color = 'black';
+    }
+    if(tasks.length === 1) {
+        taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASK';
+    }
+    else {
+        taskCount.textContent = 'YOU HAVE ' + tasks.length + ' TASKS';
+    }
+    
 }
 
 function updateCompleted() {
@@ -153,9 +164,7 @@ function updateRemaining() {
     remaining.textContent = 'REMAINING ' + (tasks.length - completedTasks.length);
 }
 
-//add the change status code
+// add style change in CSS instaed of JS
+// add transitions (when tasks are marked completed or incomplete/deleted/filtered)
 // Add a delete all button
 // Add a change status for all button
-
-// See if dashboard will be updated or not
-// To make commit show on the dashboard

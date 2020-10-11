@@ -1,6 +1,5 @@
 *, *:before, *:after {
     box-sizing: border-box;
-    transition : all 200ms ease-in;
 }
 
 body {
@@ -9,7 +8,7 @@ body {
 }
 
 .filter {
-    width : 11rem;
+    width : 20rem;
     height: 3rem;
     margin :0;
     position : fixed;
@@ -19,14 +18,20 @@ body {
     align-items: center;
 }
 
-.noFilter, .doneFilter, .incompleteFilter {
+.noFilter, .doneFilter, .incompleteFilter, .seperation, .deleteAllTasks {
     width : 2.5rem;
     height: 2.5rem;
     margin :0;
+}
+.noFilter, .doneFilter, .incompleteFilter {
     background-size: cover;
     background-position-x: center;
     background-position-y: center;
 }
+.deleteAllTasks {
+    background-color: rgba(255, 77, 70, 0.78);
+}
+
 .filter p {
     font-family: sans-serif;
     font-weight: bolder;
@@ -157,16 +162,16 @@ input, input:focus, input:active {
     width: 35rem;
     height: 4rem;
     border-bottom: solid 0.5rem rgba(211, 211, 211, 0.185);
-    margin: auto;
+    margin-left: calc(50vw - 18.5rem);
     padding-left: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-right: 0rem;
+    opacity: 1;
     /* box-shadow: 0px 0px 2px rgba(129, 129, 129, 0.527); */
-    transition : visibility 300ms ease-in;
+    transition : opacity 700ms ease-in;
 }
-
 .taskSticker p {
     font-size: 1.4rem;
     font-family: sans-serif;
@@ -177,6 +182,10 @@ input, input:focus, input:active {
     background-color: white;
     margin:0;
     transition : text-decoration 3000ms ease-in;
+}
+.taskSticker.completed p{
+    color : rgb(161, 161, 161);
+    text-decoration: line-through;
 }
 
 .buttons {
@@ -211,8 +220,12 @@ input, input:focus, input:active {
     width: 2rem;
     height: 2rem;
     background-image:url('icons/neutral_button_tr.png');
+    background-size: cover;
+}
+
+.completed .taskStatus {
+    width: 2rem;
+    height: 2rem;
+    background-image:url("icons/done_button_tr.png");
     background-size: contain;
-    transition-property: background-mage;
-    transition-timing-function: ease-in;
-    transition-duration: 200ms;
 }
